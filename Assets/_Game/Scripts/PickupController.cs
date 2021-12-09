@@ -16,56 +16,101 @@ public class PickupController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("Pressed");
-            TextMeshProUGUI[] labels = GameManager.Instance.screenController.inGame.GetComponentsInChildren<TextMeshProUGUI>();
-            foreach (TextMeshProUGUI label in labels)
+            string objTag = GameManager.Instance.GetTargetedObjectTag();
+            if (objTag == "TrapCode" || objTag == "TrapKey" || objTag == "TrapCard")
             {
-                if (label.enabled)
+                GameManager.Instance.StopAllCoroutines();
+                GameManager.Instance.screenController.KillPlayer();
+            }
+            for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
+            {
+                TextMeshProUGUI feedback = GameManager.Instance.GetObjectById(i);
+                if (feedback != null && !feedback.enabled)
                 {
-                    Debug.Log(label.name);
-                    switch (label.name)
+                    switch (feedback.name)
                     {
-                        case "Card":
-                            GameManager.Instance.card = true;
-                            TextMeshProUGUI[] objs = FindObjectsOfType<TextMeshProUGUI>();
-                            foreach (TextMeshProUGUI obj in objs)
+                        case "FeedbackPickup":
+                            if (objTag == "Card")
                             {
-                                if (obj.name == "FeedbackPickup") obj.enabled = true;
+                                GameManager.Instance.card = true;
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
                             }
                             break;
-                        case "Code":
-                            GameManager.Instance.code = true;
-                            TextMeshProUGUI[] objs1 = FindObjectsOfType<TextMeshProUGUI>();
-                            foreach (TextMeshProUGUI obj in objs1)
+                        case "FeedbackPress":
+                            if (objTag == "Code")
                             {
-                                if (obj.name == "FeedbackPress") obj.enabled = true;
+                                GameManager.Instance.code = true;
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
                             }
                             break;
-                        case "Key":
-                            GameManager.Instance.key = true;
-                            TextMeshProUGUI[] objs2 = FindObjectsOfType<TextMeshProUGUI>();
-                            foreach (TextMeshProUGUI obj in objs2)
+                        case "FeedbackSearch":
+                            if (objTag == "Key")
                             {
-                                if (obj.name == "FeedbackSearch") obj.enabled = true;
+                                GameManager.Instance.key = true;
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
                             }
                             break;
-                        case "FakeCard":
-
+                        case "FeedbackPickupFake":
+                            if (objTag == "FakeCard")
+                            {
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                            }
                             break;
-                        case "FakeCode":
-
+                        case "FeedbackPressFake":
+                            if (objTag == "FakeCode")
+                            {
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                            }
                             break;
-                        case "FakeKey":
-
+                        case "FeedbackSearchFake":
+                            if (objTag == "FakeKey")
+                            {
+                                feedback.enabled = true;
+                                GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                            }
                             break;
-                        case "TrapCard":
-
-                            break;
-                        case "TrapCode":
-
-                            break;
-                        case "TrapKey":
-
+                        case "NoKey":
+                            if (objTag == "KeyLock")
+                            {
+                                if (!GameManager.Instance.key)
+                                {
+                                    feedback.text = "Potrzebujesz klucza ¿eby otworzyæ t¹ k³ódkê";
+                                    feedback.enabled = true;
+                                    GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                                } else
+                                {
+                                    GameManager.Instance.keyLock.SetActive(false);
+                                }
+                            }
+                            else if (objTag == "CodeLock")
+                            {
+                                if (!GameManager.Instance.code)
+                                {
+                                    feedback.text = "Potrzebujesz kodu ¿eby otworzyæ t¹ k³ódkê";
+                                    feedback.enabled = true;
+                                    GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                                } else
+                                {
+                                    GameManager.Instance.codeLock.SetActive(false);
+                                }
+                            }
+                            else if (objTag == "CardLock")
+                            {
+                                if (!GameManager.Instance.card)
+                                {
+                                    feedback.text = "Potrzebujesz karty ¿eby otworzyæ t¹ k³ódkê";
+                                    feedback.enabled = true;
+                                    GameManager.Instance.StartCoroutine(GameManager.Instance.DisableAfter(4, feedback));
+                                } else
+                                {
+                                    GameManager.Instance.cardLock.SetActive(false);
+                                }
+                            }
                             break;
                     }
                 }

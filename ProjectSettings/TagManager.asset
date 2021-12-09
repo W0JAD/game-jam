@@ -12,6 +12,11 @@ TagManager:
   - FakeCode
   - TrapCard
   - TrapKey
+  - CodeLock
+  - KeyLock
+  - CardLock
+  - trapCode
+  - TrapCode\
   - TrapCode
   layers:
   - Default
@@ -21,7 +26,7 @@ TagManager:
   - Water
   - UI
   - Objectives
-  - 
+  - Lightning
   - 
   - 
   - 

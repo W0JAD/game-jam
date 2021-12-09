@@ -11,13 +11,12 @@ public class TimerController : MonoBehaviour
         minutes = Mathf.Floor(GameManager.Instance.timeLeft / 60);
         seconds = Mathf.RoundToInt(GameManager.Instance.timeLeft % 60);
 
-        if (seconds > 0)
+        if (seconds >= 10)
         {
             text.text = $"{minutes}:{seconds}";
         } else
         {
             text.text = $"{minutes}:0{seconds}";
         }
-        
     }
 }

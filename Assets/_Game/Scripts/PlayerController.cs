@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         CharacterController controller = GetComponent<CharacterController>();
-        if (controller.isGrounded)
+        if (controller.isGrounded && GameManager.Instance.playerLocked == false)
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
@@ -42,129 +42,58 @@ public class PlayerController : MonoBehaviour
                 moveDirection.y = jumpSpeed;
 
         }
-        if (GameManager.Instance.camLocked == false)
+        if (GameManager.Instance.camLocked == false && GameManager.Instance.playerLocked == false)
         {
             turner = Input.GetAxis("Mouse X") * sensitivity;
             looker = -Input.GetAxis("Mouse Y") * sensitivity;
             transform.eulerAngles = transform.eulerAngles + new Vector3(invert ? xAxis : -xAxis, Mathf.Clamp(yAxis, -90, 90), 0f);
         }
-            if (turner != 0)
+            if (turner != 0 && GameManager.Instance.playerLocked == false)
         {
             transform.eulerAngles += new Vector3(0, turner, 0);
         }
-        if (looker != 0)
+        if (looker != 0 && GameManager.Instance.playerLocked == false)
         {
             transform.eulerAngles += new Vector3(looker, 0, 0);
         }
         moveDirection.y -= gravity * Time.deltaTime;
-        controller.Move(moveDirection * Time.deltaTime);
+        if(GameManager.Instance.playerLocked == false)
+        {
+            controller.Move(moveDirection * Time.deltaTime);
+        }
+        bool hit = Physics.Raycast(camera.transform.position, transform.forward, out RaycastHit detectedObjective, 2f);
+        Debug.DrawRay(camera.transform.position, transform.forward * 2f, Color.red);
 
-        var hit = Physics.Raycast(camera.transform.position, transform.forward, out RaycastHit detectedObjective, 10f);
-        Debug.DrawRay(camera.transform.position, transform.forward * 10f, Color.red);
-
-        GameObject label;
         if (hit)
         {
             switch (detectedObjective.transform.tag)
             {
                 case "Card":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Pickup")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Pickup").enabled = true;
                     break;
                 case "Code":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Press")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Press").enabled = true;
                     break;
                 case "Key":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Search")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Search").enabled = true;
                     break;
                 case "FakeCard":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Pickup")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Pickup").enabled = true;
                     break;
                 case "FakeCode":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Press")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Press").enabled = true;
                     break;
                 case "FakeKey":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Search")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Search").enabled = true;
                     break;
                 case "TrapCard":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Pickup")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Pickup").enabled = true;
                     break;
                 case "TrapCode":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Press")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Press").enabled = true;
                     break;
                 case "TrapKey":
-                    for (int i = 0; i < GameManager.Instance.screenController.inGame.transform.childCount; i++)
-                    {
-                        label = GameManager.Instance.screenController.inGame.transform.GetChild(i).gameObject;
-                        if (label.name == "Search")
-                        {
-                            label.GetComponent<TextMeshProUGUI>().enabled = true;
-                            break;
-                        }
-                    }
+                    GameManager.Instance.GetObjectByName("Search").enabled = true;
                     break;
                 default:
                     TextMeshProUGUI[] deflabels1 = GameManager.Instance.screenController.inGame.GetComponentsInChildren<TextMeshProUGUI>();
@@ -178,5 +107,8 @@ public class PlayerController : MonoBehaviour
                     break;
             }
         }
+
+        GameManager.Instance.hit = hit;
+        GameManager.Instance.targetedObj = detectedObjective;
     }
 }
